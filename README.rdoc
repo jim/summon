@@ -1,6 +1,8 @@
 = summon
 
-Description goes here.
+Provides a nice DSL for creating dummy data using Factory Girl factory definitions.
+
+Docs and examples coming soon.
 
 == Note on Patches/Pull Requests
  
