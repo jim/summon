@@ -5,12 +5,12 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "summon"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{A library providing a nice DSL for creating dummy data using Factory Girl factory definitions}
+    gem.description = %Q{}
     gem.email = "jim@autonomousmachine.com"
     gem.homepage = "http://github.com/jim/summon"
     gem.authors = ["Jim Benton"]
-    gem.add_development_dependency "thoughtbot-shoulda"
+    gem.add_dependency 'thoughtbot-factory_girl', '>= 1.2.0'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
