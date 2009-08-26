@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "summon"
-    gem.summary = %Q{Provided a nice DSL for creating dummy data using Factory Girl factory definitions}
+    gem.summary = %Q{Provides a nice DSL for creating dummy data using Factory Girl factory definitions}
     gem.description = %Q{Allows for easily setting up deeply nested associations}
     gem.email = "jim@autonomousmachine.com"
     gem.homepage = "http://github.com/jim/summon"

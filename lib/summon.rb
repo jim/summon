@@ -1,7 +1,12 @@
 require 'factory_girl'
 
 module Summon
-  
+
+  (class << self; self; end).class_eval do
+    attr_accessor :noisy
+  end
+  self.noisy = false
+    
   class Conjure
 
     attr :parent
@@ -11,7 +16,7 @@ module Summon
     end
 
     def log(string)
-      if parent.nil?
+      if parent.nil? && Summon.noisy
         printf string; $stdout.flush
       end
     end
@@ -31,7 +36,7 @@ module Summon
         end
       end
       
-      quantity = args.first      
+      quantity = args.first || 1
       quantity = quantity.to_a[rand(quantity.to_a.size)] if quantity.is_a?(Range)
       options = args.extract_options!
 
@@ -46,7 +51,17 @@ module Summon
         if parent.nil?
           child = Factory(name, attributes)
         else
-          child = parent.send(name).create(Factory.attributes_for(name.to_s.singularize, attributes))
+          association = @parent.class.reflect_on_association(name.to_sym)
+          raise "Association #{name} not found on #{@parent.class.to_s}" unless association
+          
+          child = case association.macro
+            when :has_one:
+              parent.send("#{name}=", Factory(name.to_s.singularize, attributes))
+            when :has_many:
+              parent.send(name).create(Factory.attributes_for(name.to_s.singularize, attributes))
+            else
+              raise "#{association.macro} macros are not supported"
+          end
         end
         yield Conjure.new(child) if block_given?
       end
