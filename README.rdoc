@@ -2,7 +2,94 @@
 
 Provides a nice DSL for creating dummy data using Factory Girl factory definitions.
 
-Docs and examples coming soon.
+== Why
+
+Now that you've moved away from fixtures (well, you have, haven't you?) and started using factory_girl
+in your tests and specs, it would be nice to have a succinct way to generate dummy data for use in development.
+
+In the past I've just used a bunch of extra factories for this, but it's a lot nicer to be able to build an
+arbitrary number of objects, each with its own set of associations.
+
+== Example
+
+Here is an example Rakefile from a project I'm working on:
+
+    namespace :summon do
+      desc "Builds a ton of dummy data"
+      task :build => ['environment', 'db:reset'] do
+    
+        require 'spec/support/factories' # load factory definitions
+        require 'summon'
+        
+        published_date = lambda {
+          method = %w(ago since)[rand(2)]
+          rand(100).days.send(method)
+        }
+    
+        Summon(:label, 5)
+        Summon(:blog_topic, 10)
+    
+        Summon(:user, 20) do |user|
+          user.blogs(3..8,
+            :topic => BlogTopic.all,
+            :published_at => published_date
+          ) do |blog|
+            blog.comments 0..4
+          end
+        end
+    
+        Summon(:artist, 20) do |artist|
+          artist.events 4..6
+          artist.releases(0..5,
+           :label => Label.all
+          ) do |release|
+           release.tracks 8..12
+          end
+        end
+   
+        puts "Your minions are ready!"
+   
+      end
+    end
+
+== Features
+
+=== Specifying how many objects to build
+
+You can use an integer or range when specifying how many objects to build:
+
+    Summon(:monkey, 3)         # build 3 monkeys
+    Summon(:monkey, 3..6)      # build between 3 and 6 monkeys
+
+=== Object attributes
+
+Other attributes to set on created objects (potentially overriding those defined by the factory)
+are passed in as a hash:
+
+    Summon(:monkey, 42, :dangerous => true)     # builds 42 dangerous monkeys
+    
+If you pass a proc in as an attribute, it will be evaluated for each object and the resulting 
+value used in its place.
+
+If you pass an Array in as a value to an attribute, a value from the array will be selected at random.
+
+== Associated objects
+
+This is where the magic really happens. Use a block to define an object's associations, and 
+potentially their attributes:
+
+    Summon(:car, 4) do |car|    # Build 4 cars, and in each...
+        car.passengers 3        # Build 3 passengers
+        car.driver              # Build one driver
+    end
+    
+Right now has_many and has_one associations are supported. has_many :through is not. Associations 
+can be nested as deep as you like:
+
+    Summon(:car, 4) do |car|    # Build 4 cars, and in each...
+        car.passengers 3        # Build 3 passengers
+        car.driver              # Build one driver
+    end
 
 == Note on Patches/Pull Requests
  
