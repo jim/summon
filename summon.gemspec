@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{summon}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jim Benton"]
-  s.date = %q{2009-08-25}
+  s.date = %q{2009-08-26}
   s.description = %q{Allows for easily setting up deeply nested associations}
   s.email = %q{jim@autonomousmachine.com}
   s.extra_rdoc_files = [
@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.3}
-  s.summary = %q{Provided a nice DSL for creating dummy data using Factory Girl factory definitions}
+  s.summary = %q{Provides a nice DSL for creating dummy data using Factory Girl factory definitions}
   s.test_files = [
     "test/summon_test.rb",
      "test/test_helper.rb"
