@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jim Benton"]
   s.date = %q{2009-08-25}
-  s.description = %q{}
+  s.description = %q{Allows for easily setting up deeply nested associations}
   s.email = %q{jim@autonomousmachine.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/summon.rb",
+     "summon.gemspec",
      "test/summon_test.rb",
      "test/test_helper.rb"
   ]
@@ -31,7 +32,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.3}
-  s.summary = %q{A library providing a nice DSL for creating dummy data using Factory Girl factory definitions}
+  s.summary = %q{Provided a nice DSL for creating dummy data using Factory Girl factory definitions}
   s.test_files = [
     "test/summon_test.rb",
      "test/test_helper.rb"
