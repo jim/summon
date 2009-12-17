@@ -2,7 +2,7 @@ require 'factory_girl'
 
 module Summon
 
-  (class << self; self; end).class_eval do
+  class << self
     attr_accessor :noisy
   end
   self.noisy = false
@@ -15,8 +15,8 @@ module Summon
       @parent = parent
     end
 
-    def log(string)
-      if parent.nil? && Summon.noisy
+    def log(string, force = false)
+      if (parent.nil? && Summon.noisy) || force
         printf string; $stdout.flush
       end
     end
@@ -41,30 +41,39 @@ module Summon
       options = args.extract_options!
 
       log "** Summoning #{quantity} #{name.to_s.pluralize} "
-
-      quantity.times do
+      
+      # time = Benchmark.measure do
+        quantity.times do
         
-        log '.'
+          log '.'
         
-        attributes = process_options.call(options)
-        
-        if parent.nil?
-          child = Factory(name, attributes)
-        else
-          association = @parent.class.reflect_on_association(name.to_sym)
-          raise "Association #{name} not found on #{@parent.class.to_s}" unless association
+          attributes = process_options.call(options)
+                
+          if parent.nil?
+            child = Factory(name, attributes)
+          else
+            association = @parent.class.reflect_on_association(name.to_sym)
+            raise "Association #{name} not found on #{@parent.class.to_s}" unless association
           
-          child = case association.macro
-            when :has_one:
-              parent.send("#{name}=", Factory(name.to_s.singularize, attributes))
-            when :has_many:
-              parent.send(name).create(Factory.attributes_for(name.to_s.singularize, attributes))
-            else
-              raise "#{association.macro} macros are not supported"
+            child = case association.macro
+              when :has_one:
+                parent.send("#{name}=", Factory(name.to_s.singularize, attributes))
+              when :belongs_to:
+                parent.send("#{name}=", Factory(name.to_s.singularize, attributes))
+              when :has_many:
+                parent.send(name).create(Factory.attributes_for(name.to_s.singularize, attributes))
+              when :has_and_belongs_to_many:
+                object = Factory(name.to_s.singularize, attributes)
+                parent.send(name).send(:<<, object)
+                object
+              else
+                raise "#{association.macro} macros are not supported"
+            end
           end
+          yield Conjure.new(child) if block_given?
         end
-        yield Conjure.new(child) if block_given?
-      end
+      # end
+      # log " #{(time.real*1000/quantity).round / 1000.0}"
       log "\n"
     end
   end
